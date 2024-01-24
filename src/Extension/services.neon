@@ -12,3 +12,4 @@ services:
   coreAcl.aclService: Rdurica\CoreAcl\Model\Service\AclService
   coreAcl.sessionService: Rdurica\CoreAcl\Model\Service\SessionService
   coreAcl.authenticationService: Rdurica\CoreAcl\Model\Service\AuthenticationService
+  coreAcl.authorizationService: Rdurica\CoreAcl\Model\Service\AuthorizationService

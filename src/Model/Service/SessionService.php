@@ -33,7 +33,7 @@ final readonly class SessionService
      * Get resources & privileges from cache.
      *
      * @codeCoverageIgnore
-     * @return string[]|null
+     * @return array<int|string, array<int|string, mixed>>|null
      */
     public function getUserResourcesAndPrivileges(): ?array
     {
