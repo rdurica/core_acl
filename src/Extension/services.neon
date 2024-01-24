@@ -1,0 +1,14 @@
+services:
+  security.passwords:
+    Nette\Security\Passwords(::PASSWORD_BCRYPT, [cost: 12])
+
+  # Repositories
+  coreAcl.aclRepository: Rdurica\CoreAcl\Model\Repository\AclRepository
+  coreAcl.roleRepository: Rdurica\CoreAcl\Model\Repository\RoleRepository
+  coreAcl.userRepository: Rdurica\CoreAcl\Model\Repository\UserRepository
+  coreAcl.userRoleRepository: Rdurica\CoreAcl\Model\Repository\UserRoleRepository
+
+  # Services
+  coreAcl.aclService: Rdurica\CoreAcl\Model\Service\AclService
+  coreAcl.sessionService: Rdurica\CoreAcl\Model\Service\SessionService
+  coreAcl.authenticationService: Rdurica\CoreAcl\Model\Service\AuthenticationService

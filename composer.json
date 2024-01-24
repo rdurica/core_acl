@@ -1,0 +1,40 @@
+{
+  "name": "rdurica/core_acl",
+  "description": "ACL",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">= 8.3",
+    "rdurica/core": "dev-main",
+    "nepada/security-annotations": "^5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.3",
+    "mockery/mockery": "^1.6",
+    "dg/bypass-finals": "^1.4",
+    "roave/security-advisories": "dev-latest",
+    "nette/tester": "^2.4",
+    "squizlabs/php_codesniffer": "^3.8",
+    "phpstan/phpstan": "^1.10"
+  },
+  "scripts": {
+    "all-checks": [
+      "@phpstan",
+      "@phpcs"
+    ],
+    "phpstan": "vendor/bin/phpstan analyse -l 8 src/",
+    "phpcs": "phpcs --standard=phpcs.xml src/",
+    "phpcbf": "phpcbf --standard=phpcs.xml src/"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rdurica\\CoreAcl\\": "src/",
+      "PhpUnit\\": "tests/PhpUnit"
+    }
+  },
+  "authors": [
+    {
+      "name": "Robert Durica"
+    }
+  ]
+}
