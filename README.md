@@ -22,7 +22,7 @@ Register extension
 
 ```neon
 extensions:
-	rdurica.coreAcl: Rdurica\Core\Extension\Extension
+	rdurica.coreAcl: Rdurica\CoreAcl\Extension\Extension
 ```
 
 ## Key Features
