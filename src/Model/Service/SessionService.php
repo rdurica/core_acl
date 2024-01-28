@@ -12,13 +12,10 @@ use Nette\Http\SessionSection;
  * @copyright Copyright (c) 2024, Robert Durica
  * @since     2024-01-24
  */
-final readonly class SessionService
+readonly class SessionService
 {
     /** @var string Session section. */
     private const SESSION_SECTION_ACL = 'core_acl';
-
-    /** @var string Session subsection. */
-    private const SECTION_RESOURCES = 'resources';
 
     /**
      * Constructor.
@@ -33,23 +30,26 @@ final readonly class SessionService
      * Get resources & privileges from cache.
      *
      * @codeCoverageIgnore
-     * @return array<int|string, array<int|string, mixed>>|null
+     * @return mixed
      */
-    public function getUserResourcesAndPrivileges(): ?array
+    public function get(string $key): mixed
     {
-        return $this->getSection()[self::SECTION_RESOURCES];
+        return $this->getSection()[$key];
     }
 
     /**
      * Save resources & privileges to cache.
      *
-     * @param array<int|string, array<int|string, mixed>> $resources
+     * @param string $key
+     * @param mixed  $value
      *
      * @return void
      */
-    public function saveUserResourcesAndPrivileges(array $resources): void
+    public function save(string $key, mixed $value, int $expiration = 5): void
     {
-        $this->getSection()[self::SECTION_RESOURCES] = $resources;
+        $expirationString = sprintf('%s minutes', $expiration);
+        $this->getSection()->setExpiration($expirationString);
+        $this->getSection()[$key] = $value;
     }
 
     /**
@@ -59,6 +59,14 @@ final readonly class SessionService
      */
     private function getSection(): SessionSection
     {
-        return $this->session->getSection(self::SESSION_SECTION_ACL);
+        return $this->session->getSection($this->getSectionKey());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSectionKey(): string
+    {
+        return self::SESSION_SECTION_ACL;
     }
 }

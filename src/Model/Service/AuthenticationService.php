@@ -22,17 +22,14 @@ final readonly class AuthenticationService implements Authenticator
     /**
      * Constructor.
      *
-     * @param AclService         $aclService
      * @param UserRepository     $userRepository
      * @param UserRoleRepository $userRoleRepository
      * @param Passwords          $passwords
      */
     public function __construct(
-        private AclService $aclService,
         private UserRepository $userRepository,
         private UserRoleRepository $userRoleRepository,
         private Passwords $passwords,
-        private SessionService $sessionService
     ) {
     }
 
@@ -62,9 +59,6 @@ final readonly class AuthenticationService implements Authenticator
         }
 
         $roles = $this->userRoleRepository->findByUserId($userRow[UserRepository::PRIMARY_KEY]);
-        $resourcesAndPrivileges = $this->aclService->findResourcesAndPrivilegesByRoles(array_values($roles));
-
-        $this->sessionService->saveUserResourcesAndPrivileges($resourcesAndPrivileges);
 
         return new Identity(
             $userRow[UserRepository::PRIMARY_KEY],

@@ -4,6 +4,7 @@ namespace Rdurica\CoreAcl\Model\Repository;
 
 use Nette\Database\Table\ActiveRow;
 use Rdurica\Core\Model\Repository\Repository;
+use Rdurica\CoreAcl\Model\Data\AclData;
 
 /**
  * AclRepository.
@@ -38,6 +39,24 @@ final class AclRepository extends Repository
         return $this->select(self::RESOURCE_CODE, self::PRIVILEGE_CODE)
             ->where(self::ROLE_CODE, array_values($roles))
             ->fetchAll();
+    }
+
+    /**
+     * @return AclData[]
+     */
+    public function findAll(): array
+    {
+        $result = [];
+        foreach ($this->select() as $item) {
+            $aclData = new AclData();
+            $aclData->role = $item->role_code;
+            $aclData->resource = $item->resource_code;
+            $aclData->privilege = $item->privilege_code;
+
+            $result[] = $aclData;
+        }
+
+        return $result;
     }
 
     /** @inheritDoc */

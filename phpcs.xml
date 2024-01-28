@@ -5,5 +5,4 @@
         <exclude name="PSR12.Files.FileHeader" />
         <exclude name="PSR12.Files.OpenTag.NotAlone" />
     </rule>
-
 </ruleset>
