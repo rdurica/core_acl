@@ -2,9 +2,8 @@
 
 namespace Rdurica\CoreAcl\Model\Factory;
 
-use Nette\Caching\Cache;
-use Nette\Caching\Storage;
 use Nette\Security\Permission;
+use Rdurica\CoreAcl\Model\Data\AclData;
 use Rdurica\CoreAcl\Model\Repository\AclRepository;
 use Throwable;
 
@@ -17,42 +16,58 @@ use Throwable;
  */
 final readonly class AuthorizationFactory
 {
-    private Cache $cache;
-
     /**
      * Constructor.
      *
      * @param AclRepository $aclRepository
-     * @param Storage       $storage
      */
-    public function __construct(private AclRepository $aclRepository, Storage $storage)
+    public function __construct(private AclRepository $aclRepository)
     {
-        $this->cache = new Cache($storage, 'core_acl');
     }
 
     /**
+     * Create instance of {@see Permission}.
+     *
+     * @return Permission
      * @throws Throwable
      */
     public function create(): Permission
     {
-        $aclData = $this->cache->load('acl_data');
-        if ($aclData === null) {
-            $aclData = $this->aclRepository->findAll();
-
-            $this->cache->save('acl_data', $aclData, [
-                $this->cache::Expire => '1 hour',
-            ]);
-        }
-
-        $permission = new Permission();
-        $permission->addRole('authenticated');
+        $aclData = $this->aclRepository->findAll();
+        $permission = $this->initializePermission();
 
         foreach ($aclData as $row) {
-            $permission->addRole($row->role);
-            $permission->addResource($row->resource);
-            $permission->allow($row->role, $row->resource, $row->privilege);
+            $this->addPermision($permission, $row);
         }
 
         return $permission;
+    }
+
+    /**
+     * initialize permission object.
+     *
+     * @return Permission
+     */
+    private function initializePermission(): Permission
+    {
+        $permission = new Permission();
+        $permission->addRole('authenticated');
+
+        return $permission;
+    }
+
+    /**
+     * Set one permision.
+     *
+     * @param Permission $permission
+     * @param AclData    $aclData
+     *
+     * @return void
+     */
+    private function addPermision(Permission $permission, AclData $aclData): void
+    {
+        $permission->addRole($aclData->role);
+        $permission->addResource($aclData->resource);
+        $permission->allow($aclData->role, $aclData->resource, $aclData->privilege);
     }
 }

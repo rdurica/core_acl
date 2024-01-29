@@ -2,9 +2,14 @@
 
 namespace Rdurica\CoreAcl\Model\Repository;
 
+use Nette\Caching\Storage;
+use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
+use Rdurica\Core\Model\Builder\CacheBuilder;
 use Rdurica\Core\Model\Repository\Repository;
+use Rdurica\Core\Model\Repository\Transaction;
 use Rdurica\CoreAcl\Model\Data\AclData;
+use Throwable;
 
 /**
  * AclRepository.
@@ -27,6 +32,15 @@ final class AclRepository extends Repository
     /** @var string Column. */
     public const ROLE_CODE = 'role_code';
 
+    private CacheBuilder $cache;
+
+    public function __construct(Explorer $explorer, Transaction $transaction, Storage $storage)
+    {
+        parent::__construct($explorer, $transaction);
+
+        $this->cache = CacheBuilder::create($storage, __CLASS__);
+    }
+
     /**
      * Find Resources & privileges for role
      *
@@ -42,21 +56,25 @@ final class AclRepository extends Repository
     }
 
     /**
+     * Find all
+     *
+     * @param bool $useCache
+     *
      * @return AclData[]
+     * @throws Throwable
      */
-    public function findAll(): array
+    public function findAll(bool $useCache = true): array
     {
-        $result = [];
-        foreach ($this->select() as $item) {
-            $aclData = new AclData();
-            $aclData->role = $item->role_code;
-            $aclData->resource = $item->resource_code;
-            $aclData->privilege = $item->privilege_code;
-
-            $result[] = $aclData;
+        $aclData = $this->cache->load();
+        if ($aclData && $useCache === true) {
+            return $aclData;
         }
 
-        return $result;
+        $dataFromDatabase = $this->select();
+        $aclData = AclData::createArray($dataFromDatabase);
+        $this->cache->save($aclData);
+
+        return $aclData;
     }
 
     /** @inheritDoc */

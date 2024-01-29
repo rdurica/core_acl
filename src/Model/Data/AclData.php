@@ -2,6 +2,8 @@
 
 namespace Rdurica\CoreAcl\Model\Data;
 
+use Nette\Database\Table\Selection;
+
 /**
  * AclData.
  *
@@ -11,9 +13,20 @@ namespace Rdurica\CoreAcl\Model\Data;
  */
 final class AclData
 {
-    public string $role;
+    public function __construct(public string $role, public string $resource, public string $privilege)
+    {
+    }
 
-    public string $resource;
+    /**
+     * @return AclData[]
+     */
+    public static function createArray(Selection $data): array
+    {
+        $result = [];
+        foreach ($data as $item) {
+            $result[] = new AclData($item->role_code, $item->resource_code, $item->privilege_code);
+        }
 
-    public string $privilege;
+        return $result;
+    }
 }
