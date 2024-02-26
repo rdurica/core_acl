@@ -2,6 +2,7 @@
 
 namespace Rdurica\CoreAcl\Model\Factory;
 
+use Nette\InvalidStateException;
 use Nette\Security\Permission;
 use Rdurica\CoreAcl\Model\Data\AclData;
 use Rdurica\CoreAcl\Model\Repository\AclRepository;
@@ -66,8 +67,12 @@ final readonly class AuthorizationFactory
      */
     private function addPermision(Permission $permission, AclData $aclData): void
     {
-        $permission->addRole($aclData->role);
-        $permission->addResource($aclData->resource);
-        $permission->allow($aclData->role, $aclData->resource, $aclData->privilege);
+        try {
+            $permission->addRole($aclData->role);
+            $permission->addResource($aclData->resource);
+            $permission->allow($aclData->role, $aclData->resource, $aclData->privilege);
+        } catch (InvalidStateException) {
+            // Role already added. skipping
+        }
     }
 }

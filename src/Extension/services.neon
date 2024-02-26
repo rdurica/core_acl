@@ -1,7 +1,7 @@
 services:
   security.passwords:
     Nette\Security\Passwords(::PASSWORD_BCRYPT, [cost: 12])
-  cache.storage: Nette\Caching\Storages\SQLiteStorage('%tempDir%/cache.db')
+  cache.storage: Nette\Caching\Storages\SQLiteStorage('./../temp/cache.db')
   authorizatorFactory: Rdurica\CoreAcl\Model\Factory\AuthorizationFactory
   authorizator: @authorizatorFactory::create()
 
