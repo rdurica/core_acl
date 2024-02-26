@@ -13,7 +13,7 @@ use Nette\Database\Table\Selection;
  */
 final class AclData
 {
-    public function __construct(public string $role, public string $resource, public string $privilege)
+    public function __construct(public int $id, public string $role, public string $resource, public string $privilege)
     {
     }
 
@@ -24,7 +24,7 @@ final class AclData
     {
         $result = [];
         foreach ($data as $item) {
-            $result[] = new AclData($item->role_code, $item->resource_code, $item->privilege_code);
+            $result[] = new AclData($item->id, $item->role_code, $item->resource_code, $item->privilege_code);
         }
 
         return $result;
